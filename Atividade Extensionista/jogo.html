@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inclusão Digital para Idosos</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
@@ -13,11 +12,11 @@
             --success-color: #30D158; 
             --danger-color: #FF453A;   
             --neutral-color: #5A5A5D;  
-            --bg-color: #1C1C1E;       
-            --container-bg: #2C2C2E;   
-            --text-color: #F2F2F7;     
+            --bg-color: #1C1C1E;        
+            --container-bg: #2C2C2E;    
+            --text-color: #F2F2F7;      
             --text-secondary: #8E8E93; 
-            --border-color: #3A3A3C;   
+            --border-color: #3A3A3C;    
         }
 
         body {
@@ -28,11 +27,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
             text-align: center;
+            /* Previne zoom duplo no celular */
+            touch-action: manipulation; 
         }
 
-        /* Container principal */
+        /* Container principal RESPONSIVO */
         #menu-principal, #area-jogo {
             background-color: var(--container-bg); 
             padding: 0;
@@ -40,51 +43,31 @@
             border-radius: 12px;
             border: 1px solid var(--border-color); 
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            min-width: 400px; 
-            max-width: 600px;
+            width: 100%;
+            max-width: 600px; 
             transition: all 0.3s ease; 
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         
-        #area-jogo {
-            padding: 30px 40px;
-        }
+        #area-jogo { padding: 20px; }
 
         #menu-imagem {
             width: 100%;
-            height: 250px;
+            height: 200px;
             object-fit: cover;
             border-bottom: 1px solid var(--border-color);
         }
 
-        #menu-principal h1 {
-            margin-top: 25px;
-        }
-        
-        #menu-principal p {
-            color: var(--text-secondary);
-            padding: 0 40px;
-        }
-
-        h1, h2, h3 {
-            color: var(--text-color);
-        }
-        h3 {
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-        
-        #menu-principal button {
-            width: calc(100% - 80px);
-            margin-left: 40px;
-            margin-right: 40px;
-        }
+        h1, h2, h3 { color: var(--text-color); margin: 15px 0; }
+        p { color: var(--text-secondary); }
 
         button {
             display: block;
-            width: 100%;
+            width: 90%;
+            margin: 15px auto;
             padding: 16px; 
-            margin-top: 15px;
             font-size: 1.1em;
             font-weight: bold;
             cursor: pointer;
@@ -94,39 +77,42 @@
             color: white;
             transition: filter 0.2s ease, transform 0.1s ease; 
         }
+        button:hover { filter: brightness(85%); }
+        button:active { transform: scale(0.98); }
+        #btn-voltar { background-color: var(--neutral-color); }
 
-        button:hover {
-            filter: brightness(85%); 
-        }
-        
-        button:active {
-             transform: scale(0.98); 
-        }
-
-        #btn-voltar {
-            background-color: var(--neutral-color);
-        }
-
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none !important; }
 
         /* --- JOGO DO MOUSE --- */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        #alvo {
-            background-color: var(--danger-color) !important; 
-            animation: pulse 1.5s infinite ease-in-out; 
-            font-weight: bold;
+        #alvo-container {
+            width: 100%;
+            height: 350px;
+            position: relative;
+            background-color: #222;
+            border-radius: 8px;
+            border: 1px dashed #444;
+            margin-top: 10px;
+            overflow: hidden;
+            /* Importante para mobile: */
+            touch-action: none; 
         }
 
-        #score-display { color: var(--success-color) !important; font-weight: bold; }
-        #timer-display { color: var(--danger-color) !important; font-weight: bold; }
-        #error-display { color: #FF8A85 !important; font-weight: bold; }
+        #alvo {
+            width: 80px;
+            height: 80px;
+            background-color: var(--danger-color) !important; 
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent; /* Remove flash azul */
+            box-shadow: 0 0 15px rgba(255, 69, 58, 0.6); /* Glow para facilitar ver */
+        }
 
         /* --- JOGO DO TECLADO --- */
         #letra-display {
@@ -134,19 +120,29 @@
             color: var(--primary-color) !important;
             background-color: var(--bg-color); 
             font-weight: 700 !important;
+            font-size: 4em !important; 
+            padding: 20px !important;
+            margin: 20px auto;
+            min-width: 100px;
+            border-radius: 10px;
+        }
+        #input-mobile {
+            opacity: 0; /* Invisivel mas clicável */
+            position: absolute;
+            top: -1000px;
         }
 
         /* --- JOGO DE NAVEGAÇÃO --- */
         #fake-site {
             border: 2px solid var(--border-color);
-            padding: 20px;
+            padding: 15px;
             margin-top: 20px;
             text-align: left; 
             background-color: var(--bg-color); 
             border-radius: 8px;
         }
         .fake-link {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: var(--primary-color);
             text-decoration: none; 
             cursor: pointer;
@@ -154,32 +150,17 @@
             margin-top: 10px;
             padding: 12px;
             border-radius: 5px;
-            transition: background-color 0.2s ease, color 0.2s ease;
+            background-color: rgba(255,255,255,0.05);
             font-weight: 500;
         }
-        .fake-link:hover {
-            color: white;
-            background-color: var(--primary-color); 
-        }
-        #feedback-nav {
-            margin-top: 15px;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        
-        #fake-site button {
-            background-color: var(--primary-color);
-        }
-        #fake-site button[style*="6c757d"] {
-            background-color: var(--neutral-color);
-        }
+        #fake-site button { background-color: var(--primary-color); width: 100%; margin: 10px 0; }
+        #fake-site button[style*="6c757d"] { background-color: var(--neutral-color); }
     </style>
 </head>
 <body>
 
     <div id="menu-principal">
-        <img src="imagem-menu.jpg" alt="Idosos aprendendo a usar o computador" id="menu-imagem">
-
+        <img src="imagem-menu.jpg" alt="Idosos aprendendo a usar o computador" id="menu-imagem" onerror="this.style.display='none'">
         <h1>Aprendendo a usar o computador</h1>
         <p>Escolha por onde começar:</p>
         <button id="btn-mouse">1. Praticar com o Mouse</button>
@@ -188,221 +169,193 @@
     </div>
 
     <div id="area-jogo" class="hidden">
-        
         <div id="game-content"></div>
-
         <button id="btn-voltar">Voltar ao Menu</button>
     </div>
 
+    <input type="text" id="input-mobile">
+
     <script>
-        // Pega os elementos principais da tela
         const menuPrincipal = document.getElementById('menu-principal');
         const areaJogo = document.getElementById('area-jogo');
-        
-        const gameContent = document.getElementById('game-content'); // A área limpa
+        const gameContent = document.getElementById('game-content');
+        const inputMobile = document.getElementById('input-mobile');
 
-        // Pega os botões
         const btnMouse = document.getElementById('btn-mouse');
         const btnTeclado = document.getElementById('btn-teclado');
         const btnNavegacao = document.getElementById('btn-navegacao');
         const btnVoltar = document.getElementById('btn-voltar');
 
-        // --- VARIÁVEIS DOS JOGOS ---
+        // Variáveis de Controle
         let mouseGameTimerId = null; 
         let mouseGameScore = 0;      
         let mouseGameErrors = 0;     
         let isMouseGameActive = false; 
+        let ignoreErrorsTime = false; // NOVA TRAVA DE SEGURANÇA MOUSE
         
         let teclasDoJogoAtual = []; 
         let indiceTeclaAtual = 0;
         let letraAlvoDisplay; 
         let feedbackDisplay;  
         let keyboardGameLevel = 1; 
+        let isProcessingKey = false; 
         
+        // Níveis
         const LEVEL_1_KEYS = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ç']; 
         const LEVEL_2_KEYS = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P']; 
         const LEVEL_3_KEYS = ['Z', 'X', 'C', 'V', 'B', 'N', 'M']; 
         const LEVEL_4_KEYS = [...LEVEL_1_KEYS, ...LEVEL_2_KEYS]; 
         const LEVEL_5_KEYS = [...LEVEL_1_KEYS, ...LEVEL_2_KEYS, ...LEVEL_3_KEYS]; 
-        // ------------------------------------
 
-        // Adiciona "escutadores" de clique nos botões
         btnMouse.addEventListener('click', iniciarJogoMouse);
         btnTeclado.addEventListener('click', iniciarJogoTeclado);
         btnNavegacao.addEventListener('click', iniciarJogoNavegacao);
         btnVoltar.addEventListener('click', voltarAoMenu);
         
+        // Listener Global de Erro
         gameContent.addEventListener('click', registrarErroMouse);
-
 
         function mostrarAreaJogo() {
             menuPrincipal.classList.add('hidden'); 
             areaJogo.classList.remove('hidden');  
+            window.scrollTo(0,0);
         }
 
-        // --- 1. FUNÇÃO DE VOLTAR ---
         function voltarAoMenu() {
-            areaJogo.classList.add('hidden');       
+            areaJogo.classList.add('hidden');        
             menuPrincipal.classList.remove('hidden'); 
-            
             gameContent.innerHTML = ''; 
-            gameContent.style.minHeight = 'auto'; 
-            
             clearInterval(mouseGameTimerId); 
             window.onkeydown = null;
+            inputMobile.blur(); 
             isMouseGameActive = false; 
         }
 
-        // --- 2. JOGO DO MOUSE (Com a correção de 'position: absolute') ---
-        // --- 2. JOGO DO MOUSE (Com a correção definitiva) ---
+        // ==========================================================
+        // 1. JOGO DO MOUSE
+        // ==========================================================
         function iniciarJogoMouse() {
             mostrarAreaJogo();
             gameContent.innerHTML = ''; 
             
-            // Reseta os estilos do gameContent
-            gameContent.style.minHeight = 'auto'; 
-            gameContent.style.position = 'static';
-
             mouseGameScore = 0;
             mouseGameErrors = 0; 
             isMouseGameActive = true; 
+            ignoreErrorsTime = false; // Reset da trava
             let timeLeft = 15;
 
             const titulo = document.createElement('h2');
             titulo.id = 'mouse-game-title'; 
-            titulo.textContent = 'Jogo do Mouse: Clique no Alvo!';
-            gameContent.prepend(titulo); 
+            titulo.textContent = 'Toque no Alvo!';
+            gameContent.appendChild(titulo); 
 
-            // (O placar continua o mesmo)
             const statsContainer = document.createElement('div');
             statsContainer.style.display = 'flex';
             statsContainer.style.justifyContent = 'space-around';
             statsContainer.style.padding = '10px 0';
-
-            const scoreDisplay = document.createElement('p');
-            scoreDisplay.id = 'score-display';
-            scoreDisplay.textContent = 'Pontos: 0';
-            scoreDisplay.style.fontSize = '1.5em';
-            statsContainer.appendChild(scoreDisplay);
-
-            const timerDisplay = document.createElement('p');
-            timerDisplay.id = 'timer-display';
-            timerDisplay.textContent = 'Tempo: 15';
-            timerDisplay.style.fontSize = '1.5em';
-            statsContainer.appendChild(timerDisplay);
-
-            const errorDisplay = document.createElement('p');
-            errorDisplay.id = 'error-display';
-            errorDisplay.textContent = 'Erros: 0';
-            errorDisplay.style.fontSize = '1.5em';
-            statsContainer.appendChild(errorDisplay);
-
+            statsContainer.innerHTML = `
+                <p id="score-display" style="font-size:1.2em; color:var(--success-color)">Pontos: 0</p>
+                <p id="timer-display" style="font-size:1.2em; color:var(--danger-color)">Tempo: 15</p>
+                <p id="error-display" style="font-size:1.2em; color:#FF8A85">Erros: 0</p>
+            `;
             gameContent.appendChild(statsContainer);
 
-            // --- NOVA ESTRUTURA (A CORREÇÃO) ---
-            // 1. Criamos a "Arena" para o alvo
             const alvoContainer = document.createElement('div');
             alvoContainer.id = 'alvo-container';
-            alvoContainer.style.height = '450px';     // Define o campo de jogo
-            alvoContainer.style.position = 'relative'; // É o novo limite para o alvo
-            alvoContainer.style.marginTop = '20px';  // Espaço do placar
-            gameContent.appendChild(alvoContainer); // Adiciona a arena
+            gameContent.appendChild(alvoContainer); 
             
-            // 2. Criamos o Alvo
             const alvo = document.createElement('div');
             alvo.id = 'alvo';
-            alvo.textContent = 'Clique aqui!';
-            
-            // 3. Adicionamos o Alvo DENTRO da Arena
+            alvo.textContent = 'Aqui!';
             alvoContainer.appendChild(alvo); 
             
-            alvo.addEventListener('click', moverAlvo); 
-
-            // 4. Estilo do Alvo (flutuando dentro da Arena)
-            alvo.style.width = '100px';
-            alvo.style.height = '100px';
-            alvo.style.color = 'white';
-            alvo.style.borderRadius = '50%';
-            alvo.style.position = 'absolute'; // Flutua
-            alvo.style.cursor = 'pointer';
-            alvo.style.display = 'flex';
-            alvo.style.justifyContent = 'center';
-            alvo.style.alignItems = 'center';
-            alvo.style.fontWeight = 'bold';
+            alvo.addEventListener('touchstart', (e) => { 
+                e.preventDefault();
+                e.stopPropagation();
+                moverAlvo(); 
+            }, { passive: false });
             
-            // Posição inicial (para não bugar no canto)
-            alvo.style.top = '150px'; 
-            alvo.style.left = '150px';
-            // --- FIM DA CORREÇÃO ---
+            alvo.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                moverAlvo();
+            }); 
 
             mouseGameTimerId = setInterval(() => {
                 timeLeft--; 
-                timerDisplay.textContent = 'Tempo: ' + timeLeft;
-
-                if (timeLeft <= 0) {
-                    encerrarJogoMouse(); 
-                }
+                const tDisplay = document.getElementById('timer-display');
+                if(tDisplay) tDisplay.textContent = 'Tempo: ' + timeLeft;
+                if (timeLeft <= 0) encerrarJogoMouse(); 
             }, 1000); 
+            
+            // Centraliza
+            alvo.style.top = "50%";
+            alvo.style.left = "50%";
+            alvo.style.transform = "translate(-50%, -50%)";
         }
 
-        function moverAlvo(event) {
-            event.stopPropagation(); 
-            
+        function moverAlvo() {
             if (!isMouseGameActive) return; 
             
+            // Ignora qualquer erro pelos próximos 350ms (tempo do ghost click sumir)
+            ignoreErrorsTime = true;
+            setTimeout(() => { ignoreErrorsTime = false; }, 350);
+
             mouseGameScore++;
             const scoreDisplay = document.getElementById('score-display');
             if (scoreDisplay) scoreDisplay.textContent = 'Pontos: ' + mouseGameScore;
 
             const alvo = document.getElementById('alvo');
-            if (!alvo) return; 
+            const container = document.getElementById('alvo-container');
             
-            let padding = 10;
+            if (!alvo || !container) return; 
 
-            let maxX = 300;
-            let maxY = 340;
+            // Cálculo Responsivo
+            let maxX = container.clientWidth - 80; 
+            let maxY = container.clientHeight - 80;
 
-            const randomX = Math.floor(Math.random() * (maxX - padding + 1)) + padding;
-            const randomY = Math.floor(Math.random() * (maxY - padding + 1)) + padding;
+            if (maxX < 0) maxX = 0; 
+            if (maxY < 0) maxY = 0;
+
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
             
+            alvo.style.transform = "none";
             alvo.style.left = randomX + 'px';
             alvo.style.top = randomY + 'px';
-
-            alvo.textContent = 'Ótimo!';
-            setTimeout(() => {
-                if (alvo) alvo.textContent = 'Clique aqui!';
-            }, 300); 
         }
 
-        function registrarErroMouse() {
+        function registrarErroMouse(e) {
             if (!isMouseGameActive) return;
+            
+            // SE A TRAVA ESTIVER ATIVA, NÃO CONTA ERRO NENHUM
+            if (ignoreErrorsTime) return;
 
-            mouseGameErrors++;
-            const errorDisplay = document.getElementById('error-display');
-            if (errorDisplay) errorDisplay.textContent = 'Erros: ' + mouseGameErrors;
+            // Se clicou no alvo, sai
+            if (e.target.id === 'alvo') return;
+
+            // Só conta erro se for no container
+            if (e.target.id === 'alvo-container') {
+                mouseGameErrors++;
+                const errorDisplay = document.getElementById('error-display');
+                if (errorDisplay) errorDisplay.textContent = 'Erros: ' + mouseGameErrors;
+            }
         }
-
 
         function encerrarJogoMouse() {
             clearInterval(mouseGameTimerId);
             isMouseGameActive = false; 
-
             const alvo = document.getElementById('alvo');
             if (alvo) alvo.style.display = 'none';
-
             const titulo = document.getElementById('mouse-game-title');
             if (titulo) {
-                titulo.textContent = `Tempo Esgotado! Final: ${mouseGameScore} pontos, ${mouseGameErrors} erros.`;
+                titulo.innerHTML = `Fim! <br> Pontos: ${mouseGameScore} | Erros: ${mouseGameErrors}`;
                 titulo.style.color = "var(--primary-color)"; 
             }
-            
-            const timerDisplay = document.getElementById('timer-display');
-            if (timerDisplay) timerDisplay.textContent = 'Tempo: 0';
         }
 
-
-        // --- 3. JOGO DO TECLADO (Com Níveis) ---
-
+        // ==========================================================
+        // 2. JOGO DO TECLADO
+        // ==========================================================
         function embaralharArray(array) {
             let arrayCopiado = [...array]; 
             for (let i = arrayCopiado.length - 1; i > 0; i--) {
@@ -421,6 +374,7 @@
         function startKeyboardLevel(level) {
             gameContent.innerHTML = ''; 
             indiceTeclaAtual = 0; 
+            isProcessingKey = false;
             
             let keysForThisLevel;
             switch (level) {
@@ -429,332 +383,173 @@
                 case 3: keysForThisLevel = LEVEL_3_KEYS; break;
                 case 4: keysForThisLevel = LEVEL_4_KEYS; break;
                 case 5: keysForThisLevel = LEVEL_5_KEYS; break;
-                default:
-                    renderKeyboardVitoria(); 
-                    return;
+                default: renderKeyboardVitoria(); return;
             }
-
             teclasDoJogoAtual = embaralharArray(keysForThisLevel);
 
-            const titulo = document.createElement('h2');
-            titulo.textContent = 'Jogo do Teclado - Nível ' + level; 
-            gameContent.appendChild(titulo);
-
-            const instrucao = document.createElement('p');
-            instrucao.textContent = 'Pressione a tecla que aparece na tela:';
-            gameContent.appendChild(instrucao);
+            gameContent.innerHTML = `<h2>Jogo do Teclado - Nível ${level}</h2>
+                <p>Toque na letra abaixo para abrir o teclado:</p>`;
 
             letraAlvoDisplay = document.createElement('div');
             letraAlvoDisplay.id = 'letra-display';
             gameContent.appendChild(letraAlvoDisplay);
             
-            letraAlvoDisplay.style.fontSize = '8em'; 
-            letraAlvoDisplay.style.padding = '50px';
-            letraAlvoDisplay.style.borderRadius = '10px';
-            letraAlvoDisplay.style.minWidth = '150px';
-            letraAlvoDisplay.style.display = 'inline-block'; 
+            letraAlvoDisplay.onclick = () => {
+                inputMobile.focus();
+                inputMobile.click();
+            };
 
             feedbackDisplay = document.createElement('p');
             feedbackDisplay.id = 'feedback-teclado';
-            feedbackDisplay.style.fontSize = '1.2em';
-            feedbackDisplay.style.marginTop = '20px';
-            feedbackDisplay.style.fontWeight = 'bold';
+            feedbackDisplay.textContent = 'Clique no quadrado acima ☝️';
             gameContent.appendChild(feedbackDisplay);
 
             mostrarProximaLetra(); 
-            window.onkeydown = verificarTecla;
-        }
-
-        // Função entre os níveis (com botão)
-        function renderKeyboardLevelComplete() {
-            gameContent.innerHTML = ''; 
-
-            const titulo = document.createElement('h2');
-            titulo.textContent = 'Jogo do Teclado';
-            gameContent.appendChild(titulo);
             
-            const vitoriaMsg = document.createElement('p');
-            vitoriaMsg.textContent = `👏 Nível ${keyboardGameLevel} completo!`;
-            vitoriaMsg.style.fontSize = '1.3em';
-            vitoriaMsg.style.color = 'var(--success-color)';
-            gameContent.appendChild(vitoriaMsg);
-
-            const p = document.createElement('p');
-            p.textContent = 'Pronto para o próximo desafio?';
-            gameContent.appendChild(p);
-
-            const btnProximoNivel = document.createElement('button');
-            keyboardGameLevel++; 
-            btnProximoNivel.textContent = `Ir para o Nível ${keyboardGameLevel}`;
-            btnProximoNivel.onclick = () => startKeyboardLevel(keyboardGameLevel); 
-            gameContent.appendChild(btnProximoNivel);
-
-            const btnSair = document.createElement('button');
-            btnSair.textContent = 'Sair (Voltar ao Menu)';
-            btnSair.style.backgroundColor = 'var(--neutral-color)'; 
-            btnSair.onclick = voltarAoMenu; 
-            gameContent.appendChild(btnSair);
+            window.onkeydown = verificarTecla;
+            inputMobile.oninput = (e) => {
+                if(e.data) {
+                    // Força maiúscula e pega o último caractere digitado
+                    const key = e.data.slice(-1).toUpperCase();
+                    verificarTecla({ key: key });
+                    inputMobile.value = ''; 
+                }
+            };
+            inputMobile.focus();
         }
 
         function mostrarProximaLetra() {
             if (indiceTeclaAtual >= teclasDoJogoAtual.length) {
                 window.onkeydown = null; 
-
-                if (keyboardGameLevel < 5) {
-                    // Chama a tela com o botão
-                    renderKeyboardLevelComplete();
-                
-                } else {
-                    // Terminou o Nível 5
-                    renderKeyboardVitoria();
-                }
-            
+                inputMobile.blur();
+                if (keyboardGameLevel < 5) renderKeyboardLevelComplete();
+                else renderKeyboardVitoria();
             } else {
                 letraAlvoDisplay.textContent = teclasDoJogoAtual[indiceTeclaAtual]; 
-                feedbackDisplay.textContent = 'Aguardando a tecla...';
+                feedbackDisplay.textContent = 'Digite a letra que vê...';
                 feedbackDisplay.style.color = 'var(--text-secondary)';
+                isProcessingKey = false; 
             }
         }
 
         function verificarTecla(event) {
-            if (!letraAlvoDisplay || indiceTeclaAtual >= teclasDoJogoAtual.length) {
-                return;
-            }
+            if (isProcessingKey) return; 
+            if (!letraAlvoDisplay || indiceTeclaAtual >= teclasDoJogoAtual.length) return;
 
             let letraAlvo = teclasDoJogoAtual[indiceTeclaAtual]; 
             let letraPressionada = event.key.toUpperCase();
 
+            // Proteção contra teclas especiais
+            if (letraPressionada.length > 1) return;
+
             if (letraPressionada === letraAlvo) {
+                isProcessingKey = true;
                 indiceTeclaAtual++;
-                feedbackDisplay.textContent = 'Muito bem!';
+                feedbackDisplay.textContent = 'Correto!';
                 feedbackDisplay.style.color = 'var(--success-color)';
-                
-                setTimeout(mostrarProximaLetra, 700);
+                setTimeout(mostrarProximaLetra, 400); // 400ms delay
             } else {
-                if (event.key.length === 1 && isNaN(event.key)) { 
-                    feedbackDisplay.textContent = `Opa! Tente a tecla '${letraAlvo}'. Você apertou '${letraPressionada}'.`;
-                    feedbackDisplay.style.color = 'var(--danger-color)';
-                }
+                feedbackDisplay.textContent = `Era '${letraAlvo}', você digitou '${letraPressionada}'`;
+                feedbackDisplay.style.color = 'var(--danger-color)';
             }
         }
 
-        // Tela de vitória final
-        function renderKeyboardVitoria() {
-            gameContent.innerHTML = ''; 
-
-            const titulo = document.createElement('h2');
-            titulo.textContent = 'Jogo do Teclado';
-            gameContent.appendChild(titulo);
-            
-            const vitoriaMsg = document.createElement('p');
-            vitoriaMsg.textContent = '🏆 Parabéns! Você completou todos os 5 níveis!';
-            vitoriaMsg.style.fontSize = '1.3em';
-            vitoriaMsg.style.color = 'var(--success-color)';
-            gameContent.appendChild(vitoriaMsg);
-
-            const p = document.createElement('p');
-            p.textContent = 'O que você gostaria de fazer agora?';
-            gameContent.appendChild(p);
-
-            const btnJogarDeNovo = document.createElement('button');
-            btnJogarDeNovo.textContent = 'Jogar de Novo (do Nível 1)';
-            btnJogarDeNovo.onclick = iniciarJogoTeclado; 
-            gameContent.appendChild(btnJogarDeNovo);
-
-            const btnSair = document.createElement('button');
-            btnSair.textContent = 'Sair (Voltar ao Menu)';
-            btnSair.style.backgroundColor = 'var(--neutral-color)'; 
-            btnSair.onclick = voltarAoMenu; 
-            gameContent.appendChild(btnSair);
+        function renderKeyboardLevelComplete() {
+            gameContent.innerHTML = `<h2 style="color:var(--success-color)">Nível ${keyboardGameLevel} completo!</h2>`;
+            const btnProximoNivel = document.createElement('button');
+            keyboardGameLevel++; 
+            btnProximoNivel.textContent = `Ir para o Nível ${keyboardGameLevel}`;
+            btnProximoNivel.onclick = () => startKeyboardLevel(keyboardGameLevel); 
+            gameContent.appendChild(btnProximoNivel);
         }
 
+        function renderKeyboardVitoria() {
+            gameContent.innerHTML = `<h2 style="color:var(--success-color)">🏆 Parabéns! Você Venceu!</h2>`;
+            const btnJogarDeNovo = document.createElement('button');
+            btnJogarDeNovo.textContent = 'Jogar de Novo';
+            btnJogarDeNovo.onclick = iniciarJogoTeclado; 
+            gameContent.appendChild(btnJogarDeNovo);
+        }
 
-        // --- 4. JOGO DE NAVEGAÇÃO (Com Missões) ---
-
+        // ==========================================================
+        // 3. JOGO DE NAVEGAÇÃO
+        // ==========================================================
         let navInstrucao, navFeedback, fakeSiteContainer;
         let currentGameQuest = {};
         let currentQuestStep = 0;
 
         const NAV_QUESTS = [
-            { // Missão 1: Tecnologia
-                id: 'tecnologia',
-                steps: [
-                    {
-                        pageTitle: 'Portal de Informações',
-                        instruction: "Sua tarefa: Clique em 'Notícias'.",
-                        correctLink: 'Notícias',
-                        allLinks: ['Notícias', 'Esportes', 'Receitas', 'Saúde']
-                    },
-                    {
-                        pageTitle: 'Página de Notícias',
-                        instruction: "Ótimo! Agora, clique em 'Tecnologia'.",
-                        correctLink: 'Tecnologia',
-                        allLinks: ['Política', 'Tecnologia', 'Mundo', 'Previsão do Tempo']
-                    },
-                    {
-                        pageTitle: 'Notícias de Tecnologia',
-                        instruction: "Interessante. Agora, clique em 'Lançamentos'.",
-                        correctLink: 'Lançamentos',
-                        allLinks: ['Software', 'Hardware', 'Inteligência Artificial', 'Lançamentos']
-                    },
-                    {
-                        pageTitle: 'Lançamentos de Produtos',
-                        instruction: "Quase lá! Clique em 'Análise do Novo Celular'.",
-                        correctLink: 'Análise do Novo Celular',
-                        allLinks: ['Análise de Mouses', 'Análise do Novo Celular', 'Novo Notebook']
-                    }
-                ]
-            },
-            { // Missão 2: Culinária
-                id: 'culinaria',
-                steps: [
-                    {
-                        pageTitle: 'Portal de Informações',
-                        instruction: "Sua tarefa: Clique em 'Receitas'.",
-                        correctLink: 'Receitas',
-                        allLinks: ['Notícias', 'Esportes', 'Receitas', 'Saúde']
-                    },
-                    {
-                        pageTitle: 'Página de Receitas',
-                        instruction: "Que delícia! Agora, clique em 'Bolos e Tortas'.",
-                        correctLink: 'Bolos e Tortas',
-                        allLinks: ['Sobremesas Geladas', 'Massas', 'Bolos e Tortas', 'Salgados']
-                    },
-                    {
-                        pageTitle: 'Bolos e Tortas',
-                        instruction: "Perfeito. Encontre a 'Receita de Bolo de Chocolate'.",
-                        correctLink: 'Receita de Bolo de Chocolate',
-                        allLinks: ['Bolo de Laranja', 'Torta de Maçã', 'Receita de Bolo de Chocolate', 'Pudim']
-                    },
-                    {
-                        pageTitle: 'Receita de Bolo de Chocolate',
-                        instruction: "Último passo: Clique em 'Imprimir Receita'.",
-                        correctLink: 'Imprimir Receita',
-                        allLinks: ['Ver Vídeo', 'Imprimir Receita', 'Comentários']
-                    }
-                ]
-            },
-            { // Missão 3: Esportes
-                id: 'esportes',
-                steps: [
-                    {
-                        pageTitle: 'Portal de Informações',
-                        instruction: "Sua tarefa: Clique em 'Esportes'.",
-                        correctLink: 'Esportes',
-                        allLinks: ['Notícias', 'Esportes', 'Receitas', 'Saúde']
-                    },
-                    {
-                        pageTitle: 'Página de Esportes',
-                        instruction: "Vamos lá! Clique em 'Futebol'.",
-                        correctLink: 'Futebol',
-                        allLinks: ['Basquete', 'Vôlei', 'Futebol', 'Tênis']
-                    },
-                    {
-                        pageTitle: 'Notícias de Futebol',
-                        instruction: "Encontre a 'Tabela do Campeonato'.",
-                        correctLink: 'Tabela do Campeonato',
-                        allLinks: ['Contratações', 'Tabela do Campeonato', 'Jogos de Ontem']
-                    },
-                    {
-                        pageTitle: 'Tabela do Campeonato',
-                        instruction: "Quase lá! Clique em 'Ver Gols da Rodada'.",
-                        correctLink: 'Ver Gols da Rodada',
-                        allLinks: ['Ver Gols da Rodada', 'Classificação', 'Próximos Jogos']
-                    }
-                ]
-            }
+            { id: 'tecnologia', steps: [
+                { pageTitle: 'Portal Inicial', instruction: "Toque em 'Notícias'.", correctLink: 'Notícias', allLinks: ['Notícias', 'Esportes', 'Receitas', 'Saúde'] },
+                { pageTitle: 'Notícias', instruction: "Toque em 'Tecnologia'.", correctLink: 'Tecnologia', allLinks: ['Política', 'Tecnologia', 'Mundo', 'Tempo'] },
+                { pageTitle: 'Tecnologia', instruction: "Toque em 'Lançamentos'.", correctLink: 'Lançamentos', allLinks: ['Software', 'Hardware', 'IA', 'Lançamentos'] },
+                { pageTitle: 'Lançamentos', instruction: "Toque em 'Novo Celular'.", correctLink: 'Novo Celular', allLinks: ['Mouses', 'Novo Celular', 'Novo Notebook'] }
+            ]},
+            { id: 'culinaria', steps: [
+                { pageTitle: 'Portal Inicial', instruction: "Toque em 'Receitas'.", correctLink: 'Receitas', allLinks: ['Notícias', 'Esportes', 'Receitas', 'Saúde'] },
+                { pageTitle: 'Receitas', instruction: "Toque em 'Bolos'.", correctLink: 'Bolos', allLinks: ['Sorvetes', 'Massas', 'Bolos', 'Salgados'] },
+                { pageTitle: 'Bolos', instruction: "Toque em 'Bolo de Chocolate'.", correctLink: 'Bolo de Chocolate', allLinks: ['Bolo de Laranja', 'Torta de Maçã', 'Bolo de Chocolate', 'Pudim'] },
+                { pageTitle: 'Bolo de Chocolate', instruction: "Toque em 'Imprimir'.", correctLink: 'Imprimir', allLinks: ['Ver Vídeo', 'Imprimir', 'Comentários'] }
+            ]}
         ];
 
         function iniciarJogoNavegacao() {
             mostrarAreaJogo();
             gameContent.innerHTML = ''; 
-
             currentGameQuest = NAV_QUESTS[Math.floor(Math.random() * NAV_QUESTS.length)];
             currentQuestStep = 0; 
-
-            const titulo = document.createElement('h2');
-            titulo.textContent = 'Jogo de Navegação';
-            gameContent.appendChild(titulo);
-
-            navInstrucao = document.createElement('p');
-            navInstrucao.id = "nav-instrucao";
-            gameContent.appendChild(navInstrucao);
-
+            
+            gameContent.innerHTML = `<h2>Jogo de Navegação</h2><p id="nav-instrucao" style="padding:0 10px"></p>`;
+            navInstrucao = document.getElementById('nav-instrucao');
             fakeSiteContainer = document.createElement('div');
             fakeSiteContainer.id = 'fake-site';
             gameContent.appendChild(fakeSiteContainer);
-
             navFeedback = document.createElement('p');
             navFeedback.id = 'feedback-nav';
             gameContent.appendChild(navFeedback);
-
             renderNavStep();
         }
 
         function renderNavStep() {
-            if (currentQuestStep >= currentGameQuest.steps.length) {
-                renderNavVitoria();
-                return;
-            }
-
+            if (currentQuestStep >= currentGameQuest.steps.length) { renderNavVitoria(); return; }
             const step = currentGameQuest.steps[currentQuestStep];
-
             navInstrucao.textContent = step.instruction;
             navFeedback.textContent = ''; 
-            
             fakeSiteContainer.innerHTML = `<h3>${step.pageTitle}</h3>`;
-
             const linksEmbaralhados = embaralharArray(step.allLinks);
-            
             linksEmbaralhados.forEach(textoDoLink => {
                 const link = document.createElement('span');
                 link.textContent = textoDoLink;
                 link.className = 'fake-link';
-
-                if (textoDoLink === step.correctLink) {
-                    link.onclick = cliqueCorretoNav;
-                } else {
-                    link.onclick = cliqueErradoNav;
-                }
+                link.onclick = (textoDoLink === step.correctLink) ? cliqueCorretoNav : cliqueErradoNav;
                 fakeSiteContainer.appendChild(link);
             });
         }
 
         function cliqueCorretoNav() {
-            navFeedback.textContent = 'Excelente! Carregando próxima página...';
+            navFeedback.textContent = 'Carregando...';
             navFeedback.style.color = 'var(--success-color)';
             currentQuestStep++; 
-
             const links = document.querySelectorAll('.fake-link');
             links.forEach(link => link.onclick = null);
-
-            setTimeout(renderNavStep, 1500); 
+            setTimeout(renderNavStep, 800); 
         }
 
         function cliqueErradoNav() {
             const step = currentGameQuest.steps[currentQuestStep];
-            navFeedback.textContent = `Opa! Tente clicar em '${step.correctLink}'.`;
+            navFeedback.textContent = `Tente clicar em '${step.correctLink}'.`;
             navFeedback.style.color = 'var(--danger-color)';
         }
 
         function renderNavVitoria() {
-            navInstrucao.textContent = "Parabéns! Você aprendeu a navegar! 👏";
+            navInstrucao.textContent = "Parabéns! Missão Concluída! 👏";
             navFeedback.textContent = '';
-            
-            fakeSiteContainer.innerHTML = '<h2>Missão Concluída!</h2><p>O que você gostaria de fazer agora?</p>';
-
+            fakeSiteContainer.innerHTML = '<h2>Sucesso!</h2>';
             const btnJogarDeNovo = document.createElement('button');
-            btnJogarDeNovo.textContent = 'Jogar de Novo (Outra Missão)';
+            btnJogarDeNovo.textContent = 'Jogar Outra Missão';
             btnJogarDeNovo.onclick = iniciarJogoNavegacao; 
             fakeSiteContainer.appendChild(btnJogarDeNovo);
-
-            const btnSair = document.createElement('button');
-            btnSair.textContent = 'Sair (Voltar ao Menu)';
-            btnSair.style.backgroundColor = 'var(--neutral-color)'; 
-            btnSair.onclick = voltarAoMenu; 
-            fakeSiteContainer.appendChild(btnSair);
         }
-
     </script>
 </body>
 </html>
